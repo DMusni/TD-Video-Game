@@ -99,8 +99,8 @@ public class GameBase extends JFrame implements KeyListener, MouseListener, Mous
 		int nx = e.getX();
 		int ny = e.getY();
 		
-//		int dx = nx - mx;
-//		int dy = ny - my;
+		int dx = nx - mx;
+		int dy = ny - my;
 		
 		//set mouse coordinates to new coordinate
 		mx = nx;

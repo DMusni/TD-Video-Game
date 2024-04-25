@@ -164,10 +164,18 @@ public class Rect {
 		if(cameFromAbove(r))   pushBackUpFrom(r);
 	}
 	
+	public void chase(Rect r, int dx)
+	{
+		if(isLeftOf(r))   moveRT(dx); 
+		if(isRightOf(r))  moveLT(dx); 
+		if(isAbove(r))    moveDN(dx); 
+		if(isBelow(r))    moveUP(dx); 
+	}
+	
 	public void draw(Graphics pen) {
 		//everything (any object) you want drawn to the screen will have a draw method
 		pen.setColor(Color.red);
-		pen.fillRect(x, y, w, h); //doesn't need pen bc its pen object 
+		pen.drawRect(x, y, w, h); //doesn't need pen bc its pen object 
 	}
 	
 	public String toString() { //for figuring out where your rects are

@@ -12,7 +12,7 @@ public class ResizeRect extends Rect{
 		super(x, y, w, h);
 		
 		//will be in the bottom left corner of rectangle, 10 by 10
-		resizer = new Rect(x + w - 10, y + h - 10, 10, 10);
+		resizer = new Rect(x + w - 20, y + h - 20, 20, 20);
 	}
 	
 	public void draw(Graphics pen) {
