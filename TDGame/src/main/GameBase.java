@@ -86,12 +86,11 @@ public class GameBase extends JFrame implements KeyListener, MouseListener, Mous
 	public static final int F11         = KeyEvent.VK_F11;
 	public static final int F12         = KeyEvent.VK_F12;	
 	
-	
-	public void mouseMoved(MouseEvent e)
-	{
-		
+	public void init() {
+		addKeyListener(this);
+		addMouseListener(this);	
+		addMouseMotionListener(this);		
 	}
-	
 	
 	public void mouseDragged(MouseEvent e)
 	{
@@ -113,10 +112,6 @@ public class GameBase extends JFrame implements KeyListener, MouseListener, Mous
 		my = e.getY();
 	}
 	
-	public void mouseReleased(MouseEvent e)
-	{
-	}
-	
 	public void keyPressed(KeyEvent e)
 	{		
 		pressing[e.getKeyCode()] = true;
@@ -128,10 +123,14 @@ public class GameBase extends JFrame implements KeyListener, MouseListener, Mous
 	}
 	
 	
-	public void keyTyped(KeyEvent e) {}
-	public void mouseClicked(MouseEvent e){}
-	public void mouseEntered(MouseEvent e){}	
-	public void mouseExited(MouseEvent e){}
+	public void keyTyped     (KeyEvent e)  {}
+	public void mouseClicked (MouseEvent e){}
+	public void mouseEntered (MouseEvent e){}	
+	public void mouseExited  (MouseEvent e){}
+	public void mouseMoved   (MouseEvent e){}
+	public void mouseReleased(MouseEvent e){}
+	
+	
 	
 	
 	

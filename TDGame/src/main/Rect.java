@@ -19,17 +19,27 @@ public class Rect {
 	int old_y;
 	
 	boolean held = false; //is the rect grabbed by the mouse
-	
+	Color c;
 	
 	public Rect(int x, int y, int w, int h) {
-		this.x = x;
-		this.y = y;
+		this(x, y, w, h, Color.black);
+	}
+	
+	public Rect(int x, int y, int w, int h, Color c) {
+		setPosition(x, y);
 		
 		this.w = w;
 		this.h = h;
 		
 		old_x = x;
 		old_y = y;
+		
+		this.c = c;
+	}
+	
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 	
 	public void setVelocity(double vx, double vy) {
@@ -172,9 +182,19 @@ public class Rect {
 		if(isBelow(r))    moveUP(dx); 
 	}
 	
+	public void setColor(Color c) {
+		this.c = c;
+	}
+	
+	public void fill(Graphics pen) {
+		//everything (any object) you want drawn to the screen will have a draw method
+		pen.setColor(c);
+		pen.fillRect(x, y, w, h); //doesn't need pen bc its pen object 
+	}
+	
 	public void draw(Graphics pen) {
 		//everything (any object) you want drawn to the screen will have a draw method
-		pen.setColor(Color.red);
+		pen.setColor(c);
 		pen.drawRect(x, y, w, h); //doesn't need pen bc its pen object 
 	}
 	

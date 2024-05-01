@@ -13,9 +13,11 @@ public class GameScreen extends JPanel{
 		
 		setDoubleBuffered(true); //removes flickering
 		size = new Dimension(w, h);
+		setLayout(null);
 		setPreferredSize(size);
 		setMinimumSize(size);
 		setMaximumSize(size);
+		requestFocus();
 		
 		this.game = game;
 		

@@ -29,7 +29,6 @@ public class Sprite extends Rect {
 	
 		
 		//draws a rectangle around the sprite so you can see what space it takes up
-		//makes it easier when creating the game to see what is happening
 		//comment out when game is finished
 		pen.drawRect(x, y, w, h);
 	}
@@ -67,5 +66,4 @@ public class Sprite extends Rect {
 		moving = true;
 		
 	}
-
 }
