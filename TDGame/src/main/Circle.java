@@ -24,7 +24,7 @@ public class Circle {
 		this.r = r;
 		this.A = A;
 		
-		if (A < 0) A = (A % 360) + 360;
+		if (A < 0)   A = (A % 360) + 360;
 		if (A > 359) A-= 360;
 		
 		cosA = Lookup.cos[A]; 
@@ -82,9 +82,9 @@ public class Circle {
 		double dx = x - c.x;
 		double dy = y - c.y;
 		
-		double d = Math.sqrt(dx*dx + dy*dy);
+		double d = Math.sqrt(dx*dx + dy*dy); //distance formula
 		
-		return d < r + c.r;
+		return d < r + c.r; //true when the distance is less than the radius of the two circles added together
 	}
 	
 	public void draw(Graphics pen) {

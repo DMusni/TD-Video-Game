@@ -30,7 +30,7 @@ public class Sprite extends Rect {
 		
 		//draws a rectangle around the sprite so you can see what space it takes up
 		//comment out when game is finished
-		pen.drawRect(x, y, w, h);
+		//pen.drawRect(x, y, w, h);
 	}
 	
 //	public void moveLT(int dx) {
@@ -43,7 +43,7 @@ public class Sprite extends Rect {
 	public void moveRT(int dx) {
 		super.moveRT(dx);
 		
-		action = 2;
+		action = 0;
 		
 		moving = true;
 
@@ -61,7 +61,7 @@ public class Sprite extends Rect {
 	public void moveDN(int dy) {
 		super.moveDN(dy);
 		
-		action = 0;
+		action = 2;
 		
 		moving = true;
 		

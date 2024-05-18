@@ -21,7 +21,7 @@ public class Rect {
 	boolean held = false; //is the rect grabbed by the mouse
 	Color c;
 	
-	public Rect(int x, int y, int w, int h) {
+	public Rect(int x, int y, int w, int h) { //other constructor where default color is black
 		this(x, y, w, h, Color.black);
 	}
 	
@@ -49,7 +49,7 @@ public class Rect {
 	
 	public void moveBy(int dx, int dy) {
 		//method to move a rectangle around 
-		//if you change x and y then ur moving the rectangle
+		//if you change x and y then your moving the rectangle
 		old_x = x;
 		old_y = y;
 		
@@ -167,6 +167,13 @@ public class Rect {
 			   (y     <= r.y + r.h);
 	}
 	
+	public boolean contains(Rect r) {
+		return (x + w > r.x      )&& 
+			   (x     < r.x + r.w)&& 
+			   (y + h > r.y      )&& 
+			   (y     < r.y + r.h);
+	}
+	
 	public void pushOutOf(Rect r) {
 		if(cameFromLeftOf(r))  pushBackLeftFrom(r);
 		if(cameFromRightOf(r)) pushBackRightFrom(r);
@@ -187,15 +194,14 @@ public class Rect {
 	}
 	
 	public void fill(Graphics pen) {
-		//everything (any object) you want drawn to the screen will have a draw method
 		pen.setColor(c);
-		pen.fillRect(x, y, w, h); //doesn't need pen bc its pen object 
+		pen.fillRect(x, y, w, h);
 	}
 	
 	public void draw(Graphics pen) {
 		//everything (any object) you want drawn to the screen will have a draw method
 		pen.setColor(c);
-		pen.drawRect(x, y, w, h); //doesn't need pen bc its pen object 
+		pen.drawRect(x, y, w, h);
 	}
 	
 	public String toString() { //for figuring out where your rects are

@@ -10,14 +10,25 @@ public class Tower extends Rect{
 	
 	private Image towerBase;
 	public int towerLvl;
+	public int cost = -1;
 	
 	public Rect range;
-	public boolean inRange = false;
+	private boolean targeting = false;
 	 
-	public Animation towerWeapon;
+	public Animation towerWeapon; //bow animates when it is "shooting" an arrow
 	private String weaponDir = "UP";
+	private int dmg = 0;
+	private int cooldown;
+	public int delay;
 	
 	public int currArrow = 0;
+	public double arrowSpeed = 10;
+	public int arrowCooldown;
+	public int arrowDelay;
+	public int arrowVertW;
+	public int arrowVertH;
+	public int arrowHorzW;
+	public int arrowHorzH;
 	
 	
 	public Tower(int x, int y, int towerLvl, String dir) {
@@ -26,24 +37,107 @@ public class Tower extends Rect{
 		
 		weaponDir = dir;
 		/*
-		 * tower's range is a tile size all around the entire tower
+		 * tower's range is 2 tile sizes all around the entire tower
 		 */
-		
-		Color rangeColor = new Color(0, 0, 255, 30); //makes range transparent
-		range = new Rect(x - Game.TILE_SIZE, y - Game.TILE_SIZE, 3*Game.TILE_SIZE, 4*Game.TILE_SIZE, rangeColor);
+		Color rangeColor = new Color(0, 0, 255, 30); //makes range transparent, default color is blue
+		range = new Rect(x - 2*Game.TILE_SIZE, y - 2*Game.TILE_SIZE, 5*Game.TILE_SIZE, 6*Game.TILE_SIZE, rangeColor);
 		towerBase = Toolkit.getDefaultToolkit().getImage("img/Tower_01_Level_" + towerLvl + ".png");
-		towerWeapon = new Animation("img/Tower_Level_" + towerLvl + "_Bow", 6, 10);
+		
+		
 		setLocation(x, y);
+		setStats();
+
+		delay = getCooldown();
+		arrowDelay = arrowCooldown;
+		
+		towerWeapon = new Animation("img/Tower_Level_" + towerLvl + "_Bow", 6, getCooldown());
 	}
 	
 	public void setLocation(int x, int y) {
 		//method so that range moves with the tower
 		setPosition(x, y);
-		range.x = x - Game.TILE_SIZE;
-		range.y = y - Game.TILE_SIZE;
+		range.x = x - 2*Game.TILE_SIZE;
+		range.y = y - 2*Game.TILE_SIZE;
 	}
 	
-	public Tower getCopy() {
+	public void setStats(int cooldown, int arrowCooldown, int arrowSpeed, int dmg, int cost) {
+		this.cooldown = cooldown;   //sets the duration of the bow weapon animation
+		this.arrowCooldown = arrowCooldown;
+		this.arrowSpeed = arrowSpeed;
+		this.dmg = dmg;
+		this.cost = cost;  //cost of each tower increases at a higher level
+		
+	}
+	
+	public void setStats() {
+		switch(towerLvl) {
+		case(1): 				
+			arrowVertW = 8;
+			arrowVertH = 40;
+			
+			arrowHorzW = 40; 
+			arrowHorzH = 8;
+			
+			setStats(20, 85, 10, 10, 150);
+			break;
+		case(2):
+			arrowVertW = 15;
+			arrowVertH = 40;
+		
+			arrowHorzW = 40; 
+			arrowHorzH = 15;
+			
+			setStats(17, 68, 12, 25, 225);
+			break;
+		case(3):          
+			arrowVertW = 22;
+			arrowVertH = 40;
+	
+			arrowHorzW = 40; 
+			arrowHorzH = 22;
+		
+			setStats(14, 30, 20, 40, 400);
+			break;
+		default:
+			cooldown = 0;
+			arrowCooldown = 0;
+			arrowSpeed = 0;
+			dmg = 0;
+			cost = 0;
+			setStats(0, 0, 0, 0, 0);
+		}
+	}
+	
+	public int getCooldown() {
+		return cooldown;
+	}
+	
+	public boolean isCooldownOver() {
+		return delay <= 0;
+	}
+	
+	public boolean isArrowCooldownOver() {
+		return arrowDelay <= 0;
+	}
+	
+	public void resetCooldown() {
+		arrowDelay = arrowCooldown;
+	}
+	
+	public void resetArrowCooldown() {
+		arrowDelay = arrowCooldown;
+	}
+	
+	public void updateDelay() {
+		arrowDelay--;
+		delay--;
+	}
+	
+	public int getDmg() {
+		return dmg;
+	}
+	
+	public Tower getCopy() { 
 		return new Tower(x, y, towerLvl, getDirection());
 	}
 
@@ -51,8 +145,12 @@ public class Tower extends Rect{
 		return range;
 	}
 	
-	public boolean isInRange() {
-		return inRange;
+	public void setTargeting(boolean b) {
+		targeting = b;
+	}
+	
+	public boolean isTargeting() {
+		return targeting;
 	}
 	
 	/* Tower base doesn't change direction but the weapon does */
@@ -64,24 +162,51 @@ public class Tower extends Rect{
 		weaponDir = dir;
 	}
 	
-	
-	
-	public void shoot(Rect[] arrow) {
-		/*
-		 * Something is wrong with this method
-		 */
-		arrow[currArrow].setVelocity(1.8, 0.8);
-		
-		arrow[currArrow].x = x;
-		arrow[currArrow].y = x;
-		
-		currArrow++;
-		
-		if(currArrow == arrow.length) {
-			currArrow = 0;
+
+	public void shootAt(Enemy e) 
+	{	
+		if(isArrowCooldownOver()) {
+			double vDist  = e.y + (e.h / 2) - this.y - (this.h / 2); //vertical displacement between the tower and the enemy
+			double hDist  = e.x + (e.w / 2) - this.x - (this.w / 2); //horizontal displacement between the tower and the enemy
+
+			double angle = Math.atan2(vDist, hDist); //angle formed between the player and enemy
+			double vx = (arrowSpeed * Math.cos(angle));
+			double vy = (arrowSpeed * Math.sin(angle));
+			
+			double vxAbs = Math.abs(vx);
+			double vyAbs = Math.abs(vy);
+			
+			int arrowW;
+			int arrowH;
+			String arrowDir;
+			
+			if(vxAbs > vyAbs) {
+				if(vx > 0) arrowDir = "RT";
+				else       arrowDir = "LT";
+				
+				arrowW = arrowHorzW;
+				arrowH = arrowHorzH;
+			}
+			else {
+				if(vy > 0) arrowDir = "DN";
+				else       arrowDir = "UP";
+				
+				arrowW = arrowVertW;
+				arrowH = arrowVertH;
+			}
+			
+			Arrow arrow = new Arrow(x + 32, y + 32, arrowW, arrowH, towerLvl, arrowDir); 
+			arrow.setVelocity(vx, vy);
+			arrow.setDamage(getDmg());
+			Game.arrows.add(arrow);
+			
+			resetArrowCooldown();
 		}
-		
+		updateDelay();
+ 
 	}
+	
+	
 	
 	public void draw(Graphics pen) {
 		//Draws Tower Base w/ range
@@ -89,21 +214,46 @@ public class Tower extends Rect{
 		//range.draw(pen);
 
 		
-		//Drawing weapon animation
-		if (!inRange) {
+		//Draws idle tower 
+		if (!targeting) {
 			if (weaponDir.equals("UP")) { 
-				pen.drawImage(towerWeapon.startImage(), x - 16, y + 5, 96, 96, null);
+				switch(towerLvl) { //making sure the weapon sits in the correct place on top of its respective tower
+				case 1:
+					pen.drawImage(towerWeapon.startImage(), x - 16, y + 5, 96, 96, null);
+					break;
+				case 2:
+					pen.drawImage(towerWeapon.startImage(), x - 16, y - 2, 96, 96, null);
+					break;
+				case 3:
+					pen.drawImage(towerWeapon.startImage(), x - 16, y - 11, 96, 96, null);
+					break;
+				default:
+					pen.drawImage(towerWeapon.startImage(), x - 16, y, 96, 96, null);
+				}
+				
 			}
 		}
-		else {
+		else { //if tower is targeting, draw the animation 
 			if (weaponDir.equals("UP")) {
-				pen.drawImage(towerWeapon.nextImage(), x - 16, y + 5, 96, 96, null);
+				switch(towerLvl) {
+				case 1:
+					pen.drawImage(towerWeapon.nextImage(), x - 16, y + 5, 96, 96, null);
+					break;
+				case 2:
+					pen.drawImage(towerWeapon.nextImage(), x - 16, y - 2, 96, 96, null);
+					break;
+				case 3:
+					pen.drawImage(towerWeapon.nextImage(), x - 16, y - 11, 96, 96, null);
+					break;
+				default:
+					pen.drawImage(towerWeapon.nextImage(), x - 16, y, 96, 96, null);
+				}
 			}
 		}
 		
 		pen.setColor(Color.blue);
-		pen.drawRect(x - 16, y + 5, 96, 128); //rect around the entire tower(base & weapon)
-		super.draw(pen);
+		//pen.drawRect(x - 16, y + 5, 96, 128); //rect around the entire tower(base & weapon)
+		//super.draw(pen);
 	}
 	
 	

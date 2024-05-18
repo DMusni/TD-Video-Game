@@ -4,7 +4,7 @@ import java.awt.Graphics;
 public class ResizeRect extends Rect{
 	/*
 	 * Taken from CMP428 Rect2 class
-	 * Rect class for the purpose of being a tool to be able to resize rectangles 
+	 * Rect class for the purpose of being a tool to be able to resize and drag to move rectangles 
 	 */
 	Rect resizer;
 

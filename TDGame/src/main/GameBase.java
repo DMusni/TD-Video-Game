@@ -73,6 +73,7 @@ public class GameBase extends JFrame implements KeyListener, MouseListener, Mous
 	public static final int COLON       = KeyEvent.VK_COLON;
 	public static final int QUOTE       = KeyEvent.VK_QUOTE;
 	
+	public static final int ESC 		= KeyEvent.VK_ESCAPE;
 	public static final int F1          = KeyEvent.VK_F1;
 	public static final int F2          = KeyEvent.VK_F2;
 	public static final int F3          = KeyEvent.VK_F3;
